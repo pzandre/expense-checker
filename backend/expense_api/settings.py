@@ -42,6 +42,7 @@ db_options = {}
 if db_host.endswith('.supabase.co'):
     db_options = {
         'sslmode': 'require',
+        'sslrootcert': os.getenv('POSTGRES_SSLROOTCERT', ''),
     }
 
 DATABASES = {

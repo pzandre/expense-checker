@@ -1,5 +1,4 @@
 #!/bin/bash
-uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
-python manage.py migrate
+echo "BUILD START"
+echo "$POSTGRES_SSLROOTCERT" | base64 --decode > cert.crt
+echo "BUILD END"
