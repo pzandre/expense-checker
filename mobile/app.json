@@ -35,7 +35,11 @@
       "@react-native-community/datetimepicker"
     ],
     "extra": {
-      "router": {}
-    }
+      "router": {},
+      "eas": {
+        "projectId": "8a1c49a6-8e5c-4e7c-8785-d0fe413e07ec"
+      }
+    },
+    "owner": "andrepz"
   }
 }
