@@ -185,7 +185,7 @@ cp .env.example .env
 
 4. Update `.env` with your API base URL (optional - defaults to `http://localhost:8000/api`):
 ```
-API_BASE_URL=http://localhost:8000/api
+EXPO_PUBLIC_API_URL=http://localhost:8000/api
 ```
 
 **Note**: For production, you may need to update the API base URL in `mobile/services/api.ts` or configure it via `app.json` extra config.
@@ -282,7 +282,7 @@ python manage.py test
 - `DB_PORT` - PostgreSQL port
 
 **Mobile** (`.env`):
-- `API_BASE_URL` - Backend API base URL
+- `EXPO_PUBLIC_API_URL` - Backend API base URL
 
 ## License
 

@@ -38,7 +38,7 @@ cp .env.example .env
 Edit `.env` and set your API base URL:
 
 ```env
-API_BASE_URL=http://localhost:8000/api
+EXPO_PUBLIC_API_URL=http://localhost:8000/api
 ```
 
 **Note:** For Android emulator, use `http://10.0.2.2:8000/api` instead of `localhost`  
