@@ -159,12 +159,74 @@ class ExpenseTests(APITestCase):
         self.assertEqual(Expense.objects.filter(user=self.user1).count(), 1)
 
     def test_filter_expenses_by_category(self):
-        """Test filtering expenses by category."""
-        response = self.client.get(self.list_url, {'category': self.category1.id})
+        """Test filtering expenses by single category."""
+        response = self.client.get(self.list_url, {'category': str(self.category1.id)})
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 1)
         self.assertEqual(response.data['results'][0]['category_name'], 'Food')
+
+    def test_filter_expenses_by_multiple_categories(self):
+        """Test filtering expenses by multiple categories."""
+        # Create a third expense with category1 for user1
+        expense3 = Expense.objects.create(
+            user=self.user1,
+            amount='75.00',
+            description='Snack',
+            category=self.category1,
+            date=date.today()
+        )
+        
+        # Filter by both categories (comma-separated)
+        response = self.client.get(
+            self.list_url,
+            {'category': f'{self.category1.id},{self.category2.id}'}
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 3)
+        category_names = [exp['category_name'] for exp in response.data['results']]
+        self.assertIn('Food', category_names)
+        self.assertIn('Transport', category_names)
+        
+        # Filter by single category using comma format
+        response = self.client.get(
+            self.list_url,
+            {'category': str(self.category1.id)}
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 2)
+        for exp in response.data['results']:
+            self.assertEqual(exp['category_name'], 'Food')
+
+    def test_filter_expenses_by_category_invalid_ids(self):
+        """Test filtering expenses with invalid category IDs."""
+        # Create another expense with category1 for user1
+        Expense.objects.create(
+            user=self.user1,
+            amount='75.00',
+            description='Snack',
+            category=self.category1,
+            date=date.today()
+        )
+        
+        # Empty string should return all expenses
+        response = self.client.get(self.list_url, {'category': ''})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Invalid ID should return empty results
+        response = self.client.get(self.list_url, {'category': '99999'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 0)
+        
+        # Mix of valid and invalid IDs should only use valid ones
+        response = self.client.get(
+            self.list_url,
+            {'category': f'{self.category1.id},99999'}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 2)
 
     def test_filter_expenses_by_date_from(self):
         """Test filtering expenses by date_from."""

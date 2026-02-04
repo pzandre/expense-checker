@@ -105,15 +105,43 @@ class ReportTests(APITestCase):
         self.assertEqual(transport_total['count'], 1)
 
     def test_summary_report_filter_by_category(self):
-        """Test summary report filtered by category."""
+        """Test summary report filtered by single category."""
         response = self.client.get(
             self.summary_url,
-            {'category': self.category1.id}
+            {'category': str(self.category1.id)}
         )
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['total_amount'], 150.00)
         self.assertEqual(response.data['total_count'], 2)
+        self.assertEqual(len(response.data['category_totals']), 1)
+
+    def test_summary_report_filter_by_multiple_categories(self):
+        """Test summary report filtered by multiple categories."""
+        # Filter by both categories (comma-separated)
+        response = self.client.get(
+            self.summary_url,
+            {'category': f'{self.category1.id},{self.category2.id}'}
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['total_amount'], 180.00)  # 100 + 50 + 30
+        self.assertEqual(response.data['total_count'], 3)
+        self.assertEqual(len(response.data['category_totals']), 2)
+        
+        # Verify both categories are in totals
+        category_names = [ct['category__name'] for ct in response.data['category_totals']]
+        self.assertIn('Food', category_names)
+        self.assertIn('Transport', category_names)
+        
+        # Filter by single category using comma format
+        response = self.client.get(
+            self.summary_url,
+            {'category': str(self.category1.id)}
+        )
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['total_amount'], 150.00)
         self.assertEqual(len(response.data['category_totals']), 1)
 
     def test_summary_report_filter_by_date_from(self):

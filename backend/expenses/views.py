@@ -28,7 +28,7 @@ class ExpenseViewSet(viewsets.ModelViewSet):
     """ViewSet for managing expenses."""
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['category', 'date']
+    filterset_fields = ['date']  # Removed 'category' - handled manually for multi-select
     search_fields = ['description', 'category__name']
     ordering_fields = ['date', 'amount', 'created_at']
     ordering = ['-date', '-created_at']
@@ -45,6 +45,21 @@ class ExpenseViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(date__gte=date_from)
         if date_to:
             queryset = queryset.filter(date__lte=date_to)
+        
+        # Support multiple categories (comma-separated IDs)
+        category = self.request.query_params.get('category', None)
+        if category:
+            category_ids = []
+            for cid in category.split(','):
+                cid = cid.strip()
+                if cid:
+                    try:
+                        category_ids.append(int(cid))
+                    except ValueError:
+                        # Skip invalid category IDs
+                        continue
+            if category_ids:
+                queryset = queryset.filter(category_id__in=category_ids)
         
         return queryset
 
@@ -69,13 +84,24 @@ class ReportViewSet(viewsets.ViewSet):
         queryset = Expense.objects.filter(user=request.user)
         
         # Apply filters
-        category_id = request.query_params.get('category', None)
+        category = request.query_params.get('category', None)
         date_from = request.query_params.get('date_from', None)
         date_to = request.query_params.get('date_to', None)
         description = request.query_params.get('description', None)
         
-        if category_id:
-            queryset = queryset.filter(category_id=category_id)
+        # Support multiple categories (comma-separated IDs)
+        if category:
+            category_ids = []
+            for cid in category.split(','):
+                cid = cid.strip()
+                if cid:
+                    try:
+                        category_ids.append(int(cid))
+                    except ValueError:
+                        # Skip invalid category IDs
+                        continue
+            if category_ids:
+                queryset = queryset.filter(category_id__in=category_ids)
         if date_from:
             queryset = queryset.filter(date__gte=date_from)
         if date_to:
@@ -114,7 +140,7 @@ class ReportViewSet(viewsets.ViewSet):
             'category_totals': list(category_totals),
             'average_daily': float(avg_daily) if avg_daily else None,
             'filters': {
-                'category': category_id,
+                'category': category,
                 'date_from': date_from,
                 'date_to': date_to,
                 'description': description,
