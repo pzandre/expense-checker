@@ -1,5 +1,4 @@
 {
-    "installCommand": "pip install -r requirements.txt && python manage.py migrate",
     "builds": [
         {
             "src": "expense_api/wsgi.py",
@@ -7,6 +6,13 @@
             "config": {
                 "maxLambdaSize": "15mb",
                 "runtime": "python3.13"
+            }
+        },
+        {
+            "src": "build_files.sh",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "."
             }
         }
     ],
