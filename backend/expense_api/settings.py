@@ -35,7 +35,7 @@ ROOT_URLCONF = 'expense_api.urls'
 
 WSGI_APPLICATION = 'expense_api.wsgi.application'
 
-db_host = os.getenv('POSTGRES_HOST', 'db')
+db_host = os.getenv('NEON_POSTGRES_HOST', 'db')
 db_options = {}
 
 # Enable SSL for Supabase connections
@@ -48,9 +48,9 @@ if db_host.endswith('.supabase.co'):
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DATABASE', 'expense_checker'),
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
+        'NAME': os.getenv('NEON_POSTGRES_DATABASE', 'expense_checker'),
+        'USER': os.getenv('NEON_POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.getenv('NEON_POSTGRES_PASSWORD', 'postgres'),
         'HOST': db_host,
         'PORT': os.getenv('DB_PORT', '5432'),
         'OPTIONS': db_options,
