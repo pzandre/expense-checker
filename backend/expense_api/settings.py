@@ -35,14 +35,24 @@ ROOT_URLCONF = 'expense_api.urls'
 
 WSGI_APPLICATION = 'expense_api.wsgi.application'
 
+db_host = os.getenv('POSTGRES_HOST', 'db')
+db_options = {}
+
+# Enable SSL for Supabase connections
+if db_host.endswith('.supabase.co'):
+    db_options = {
+        'sslmode': 'require',
+    }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DATABASE', 'expense_checker'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
-        'HOST': os.getenv('POSTGRES_HOST', 'db'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
+        'HOST': db_host,
         'PORT': os.getenv('DB_PORT', '5432'),
+        'OPTIONS': db_options,
     }
 }
 
