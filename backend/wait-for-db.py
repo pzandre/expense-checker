@@ -7,11 +7,11 @@ from psycopg2 import OperationalError
 
 def wait_for_db(max_attempts=30):
     db_config = {
-        'host': os.getenv('DB_HOST', 'db'),
+        'host': os.getenv('POSTGRES_HOST', 'db'),
         'port': os.getenv('DB_PORT', '5432'),
-        'user': os.getenv('DB_USER', 'postgres'),
-        'password': os.getenv('DB_PASSWORD', 'postgres'),
-        'database': os.getenv('DB_NAME', 'expense_checker'),
+        'user': os.getenv('POSTGRES_USER', 'postgres'),
+        'password': os.getenv('POSTGRES_PASSWORD', 'postgres'),
+        'database': os.getenv('POSTGRES_DATABASE', 'expense_checker'),
     }
     
     print(f"Waiting for PostgreSQL at {db_config['host']}...", file=sys.stderr)

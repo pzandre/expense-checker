@@ -38,10 +38,10 @@ WSGI_APPLICATION = 'expense_api.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'expense_checker'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),
-        'HOST': os.getenv('DB_HOST', 'db'),
+        'NAME': os.getenv('POSTGRES_DATABASE', 'expense_checker'),
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'HOST': os.getenv('POSTGRES_HOST', 'db'),
         'PORT': os.getenv('DB_PORT', '5432'),
     }
 }

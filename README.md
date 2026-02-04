@@ -36,9 +36,9 @@ cp .env.example .env
 SECRET_KEY=your-secret-key-here
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
-DB_NAME=expense_checker
-DB_USER=postgres
-DB_PASSWORD=postgres
+POSTGRES_DATABASE=expense_checker
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
 ```
 
 4. Start the services:
@@ -275,10 +275,10 @@ python manage.py test
 - `SECRET_KEY` - Django secret key
 - `DEBUG` - Debug mode (True/False)
 - `ALLOWED_HOSTS` - Comma-separated hosts
-- `DB_NAME` - PostgreSQL database name
-- `DB_USER` - PostgreSQL user
-- `DB_PASSWORD` - PostgreSQL password
-- `DB_HOST` - PostgreSQL host
+- `POSTGRES_DATABASE` - PostgreSQL database name
+- `POSTGRES_USER` - PostgreSQL user
+- `POSTGRES_PASSWORD` - PostgreSQL password
+- `POSTGRES_HOST` - PostgreSQL host
 - `DB_PORT` - PostgreSQL port
 
 **Mobile** (`.env`):
